@@ -1,9 +1,9 @@
-import { ProductDto } from './product.dto';
+import {ProductDto} from './product.dto';
 
-import { ProductModel } from './product.model';
-import { Product } from './product.interface';
-import { BadRequest } from '../exceptions/BadRequest';
-import { QueryParamsType } from '../types/request';
+import {ProductModel} from './product.model';
+import {Product} from './product.interface';
+import {QueryParamsType} from '../types/request';
+import {ObjectId} from "mongodb";
 
 class ProductsService {
     getProductDto(product: Product) {
@@ -11,7 +11,7 @@ class ProductsService {
     }
 
     async getAll(query: QueryParamsType) {
-        const { category } = query;
+        const {category} = query;
         let products;
         const limit = query.limit ?? 3;
         const page = query.page ?? 1;
@@ -21,23 +21,23 @@ class ProductsService {
             products = await ProductModel.find()
                 .skip(page * limit - limit)
                 .limit(limit)
-                .sort({ [sort]: order });
+                .sort({[sort]: order});
         } else {
-            products = await ProductModel.find({ category })
+            products = await ProductModel.find({category})
                 .skip(page * limit - limit)
                 .limit(limit)
-                .sort({ [sort]: order });
+                .sort({[sort]: order});
         }
 
         return products.map((product) => this.getProductDto(product));
     }
 
     async getOne(id: string) {
+
         const product = await ProductModel.findById<Product>(id);
-        if (!product) {
-            return new BadRequest();
-        }
-        return this.getProductDto(product);
+        if (product)
+        return this.getProductDto(product)
     }
 }
+
 export default new ProductsService();

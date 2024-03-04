@@ -6,6 +6,7 @@ import path from "path";
 import cookieParser from 'cookie-parser';
 import mongoose from 'mongoose';
 import fileUpload from 'express-fileupload';
+import errorMiddleware from "./src/middleware/error.middleware";
 
 dotenv.config()
 const app: Application = express();
@@ -23,18 +24,8 @@ app.use(express.json());
 app.use(express.static(path.resolve(__dirname, 'static')));
 app.use(fileUpload({}));
 app.use('', router)
-// app
-//   .listen(PORT, "localhost", function () {
-//     console.log(`Server is running on port ${PORT}.`);
-//   })
-//   .on("error", (err: any) => {
-//     if (err.code === "EADDRINUSE") {
-//       console.log("Error: address already in use");
-//     } else {
-//       console.log(err);
-//     }
-//   });
 
+app.use(errorMiddleware);
 const start = async () => {
     try {
         await mongoose.connect('mongodb://localhost:27017/shopdb', {});

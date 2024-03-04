@@ -3,6 +3,7 @@ import { NextFunction, Response } from 'express';
 import { Product } from './product.interface';
 import { QueryParamsType, RequestWithParams, RequestWithQuery } from '../types/request';
 import {BadRequest} from "../exceptions/BadRequest";
+import ApiError from "../exceptions/ApiError";
 
 
 class ProductsController {
@@ -28,12 +29,12 @@ class ProductsController {
         try {
             const { id } = req.params;
             if (!id) {
-                return next(new BadRequest());
+                return next(ApiError.BadRequest('ошибка валидации'));
             }
             const product = await ProductsService.getOne(id);
             return res.json(product);
         } catch (e) {
-            return next(new BadRequest());
+            console.log(e)
         }
     }
 }
