@@ -11,7 +11,6 @@ class ProductsController {
     ) {
         try {
             const {query} = req;
-
             const products = await ProductsService.getAll(query);
             return res.json(products);
         } catch (e) {

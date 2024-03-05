@@ -13,8 +13,12 @@ const app: Application = express();
 
 
 const PORT: number = process.env.PORT ? parseInt(process.env.PORT) : 8000;
+
+const DB_URL: string = process.env.DB_URL ? process.env.DB_URL : "mongodb://localhost:27017/shopdb"
+
 const corsOptions: CorsOptions = {
-    origin: "http://localhost:8000"
+    origin: process.env.CLIENT_URL,
+    credentials: true,
 };
 app.use(express.json());
 app.use(cors(corsOptions));
@@ -26,7 +30,7 @@ app.use('', router)
 app.use(errorMiddleware);
 const start = async () => {
     try {
-        await mongoose.connect('mongodb://localhost:27017/shopdb', {});
+        await mongoose.connect(DB_URL, {});
         console.log('Подключение установлено');
         app.listen(PORT, () => console.log(`server started on PORT=${PORT}`));
     } catch (e) {

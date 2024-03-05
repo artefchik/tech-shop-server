@@ -3,7 +3,6 @@ import {ProductDto} from './product.dto';
 import {ProductModel} from './product.model';
 import {Product} from './product.interface';
 import {QueryParamsType} from '../types/request';
-import {BadRequest} from "../exceptions/BadRequest";
 import ApiError from "../exceptions/ApiError";
 
 class ProductsService {

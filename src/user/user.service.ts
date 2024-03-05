@@ -25,11 +25,11 @@ class UserService {
         const {email, username, password} = userData;
         const userFromDb = await UserModel.findOne<User>({email});
         if (userFromDb) {
-            return ApiError.badRequest(`The user with email ${userFromDb.email} already exists`)
+            throw ApiError.badRequest(`The user with email ${userFromDb.email} already exists`)
         }
         const userWithName = await UserModel.findOne<User>({username});
         if (userWithName) {
-            return ApiError.badRequest(`The user with email ${userWithName.email} already exists`)
+            throw ApiError.badRequest(`The user with email ${userWithName.email} already exists`)
         }
         const hasPassword = await bcrypt.hash(password, 4);
         const activatedLinkEmail = hasPassword;
