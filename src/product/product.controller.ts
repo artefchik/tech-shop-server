@@ -1,9 +1,6 @@
 import ProductsService from './product.service';
-import { NextFunction, Response } from 'express';
-import { Product } from './product.interface';
-import { QueryParamsType, RequestWithParams, RequestWithQuery } from '../types/request';
-import {BadRequest} from "../exceptions/BadRequest";
-import ApiError from "../exceptions/ApiError";
+import {NextFunction, Response} from 'express';
+import {QueryParamsType, RequestWithParams, RequestWithQuery} from '../types/request';
 
 
 class ProductsController {
@@ -13,7 +10,8 @@ class ProductsController {
         next: NextFunction,
     ) {
         try {
-            const { query } = req;
+            const {query} = req;
+
             const products = await ProductsService.getAll(query);
             return res.json(products);
         } catch (e) {
@@ -26,15 +24,14 @@ class ProductsController {
         res: Response,
         next: NextFunction,
     ) {
+
         try {
-            const { id } = req.params;
-            if (!id) {
-                return next(ApiError.BadRequest('ошибка валидации'));
-            }
+            const {id} = req.params;
             const product = await ProductsService.getOne(id);
             return res.json(product);
         } catch (e) {
-            console.log(e)
+             next(e);
+
         }
     }
 }

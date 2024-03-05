@@ -3,7 +3,8 @@ import {ProductDto} from './product.dto';
 import {ProductModel} from './product.model';
 import {Product} from './product.interface';
 import {QueryParamsType} from '../types/request';
-import {ObjectId} from "mongodb";
+import {BadRequest} from "../exceptions/BadRequest";
+import ApiError from "../exceptions/ApiError";
 
 class ProductsService {
     getProductDto(product: Product) {
@@ -33,9 +34,10 @@ class ProductsService {
     }
 
     async getOne(id: string) {
-
         const product = await ProductModel.findById<Product>(id);
-        if (product)
+        if (!product) {
+            throw  ApiError.badRequest('Product not found')
+        }
         return this.getProductDto(product)
     }
 }

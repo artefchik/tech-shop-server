@@ -61,7 +61,7 @@ class TokenService {
     validateRefreshToken(token: string) {
         try {
             const userData = jwt.verify(token, JWT_REFRESH_KEY);
-            return userData as User;
+            return userData ;
         } catch (e) {
             return null;
         }

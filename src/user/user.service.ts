@@ -1,10 +1,10 @@
 import bcrypt from 'bcrypt';
-import { UserModel } from './user.model';
-import { UserDto } from './user.dto';
-import { Types } from 'mongoose';
+import {UserModel} from './user.model';
+import {UserDto} from './user.dto';
+import {Types} from 'mongoose';
 import TokenService from '../token/token.service';
-import { User } from './user.interface';
-import { Token } from '../token/token.interface';
+import {User} from './user.interface';
+import {Token} from '../token/token.interface';
 
 import ProfileService from '../profile/profile.service';
 import BasketService from '../basket/basket.service';
@@ -15,20 +15,21 @@ interface UserRegistration {
     password: string;
     username: string;
 }
+
 class UserService {
     getDto(user: User) {
         return new UserDto(user);
     }
-    async registration(userData: UserRegistration) {
-        const { email, username, password } = userData;
-        const userFromDb = await UserModel.findOne({ email });
-        if (userFromDb) {
-            return  ApiError.BadRequest('ошибка валидации');
 
+    async registration(userData: UserRegistration) {
+        const {email, username, password} = userData;
+        const userFromDb = await UserModel.findOne<User>({email});
+        if (userFromDb) {
+            return ApiError.badRequest(`The user with email ${userFromDb.email} already exists`)
         }
-        const name = await UserModel.findOne({ username });
-        if (name) {
-            return  ApiError.BadRequest('ошибка валидации');
+        const userWithName = await UserModel.findOne<User>({username});
+        if (userWithName) {
+            return ApiError.badRequest(`The user with email ${userWithName.email} already exists`)
         }
         const hasPassword = await bcrypt.hash(password, 4);
         const activatedLinkEmail = hasPassword;
@@ -39,7 +40,7 @@ class UserService {
             activatedLinkEmail,
         });
         const userDto = this.getDto(user);
-        const tokens = TokenService.generateTokens({ ...userDto });
+        const tokens = TokenService.generateTokens({...userDto});
         await TokenService.saveToken({
             userId: userDto.id,
             refreshToken: tokens.refreshToken,
@@ -55,20 +56,18 @@ class UserService {
     }
 
     async login(email: string, password: string) {
-        const user = await UserModel.findOne<User>({ email });
+        const user = await UserModel.findOne<User>({email});
         if (!user) {
-            return  ApiError.BadRequest('ошибка валидации');
-
+            throw ApiError.badRequest('User not found')
         }
 
         const isPasswordEquals = await bcrypt.compare(password, user.password);
         if (!isPasswordEquals) {
-            return  ApiError.BadRequest('ошибка валидации');
-
+            throw ApiError.badRequest('Passwords don\'t match')
         }
 
         const userDto = new UserDto(user);
-        const tokens = TokenService.generateTokens({ ...userDto });
+        const tokens = TokenService.generateTokens({...userDto});
         await TokenService.saveToken({
             userId: userDto.id,
             refreshToken: tokens.refreshToken,
@@ -89,16 +88,15 @@ class UserService {
         const userData = TokenService.validateRefreshToken(refreshToken);
         const tokenInDb = await TokenService.findToken(refreshToken);
         if (!userData || !tokenInDb) {
-            return  ApiError.BadRequest('ошибка валидации');
-
+            throw ApiError.badRequest('User not found')
         }
-        const user = await UserModel.findById<User>(userData._id);
+        //@ts-ignore
+        const user = await UserModel.findById<User>(userData.id);
         if (!user) {
-            return  ApiError.BadRequest('ошибка валидации');
-
+            throw ApiError.badRequest(`User not found`)
         }
         const userDto = new UserDto(user);
-        const tokens = TokenService.generateTokens({ ...userDto });
+        const tokens = TokenService.generateTokens({...userDto});
         await TokenService.saveToken({
             userId: userDto.id,
             refreshToken: tokens.refreshToken,
@@ -114,8 +112,7 @@ class UserService {
     async getOne(id: Types.ObjectId) {
         const user = await UserModel.findById<User>(id);
         if (!user) {
-            return  ApiError.BadRequest('ошибка валидации');
-
+            throw ApiError.badRequest('User not found')
         }
         return new UserDto(user);
     }

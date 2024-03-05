@@ -1,22 +1,21 @@
 class ApiError extends Error {
-    public status: number;
+   public status: number;
+   public message: string;
 
-    public message: string;
-
-    constructor(status:number, message:string) {
+    constructor(status: number, message: string) {
         super(message);
-
         this.status = status;
         this.message = message;
     }
 
-    static BadRequest(message:string) {
-        return new ApiError(400, message);
+    static badRequest(message: string,) {
+        return new ApiError(400, message,);
     }
 
-    static Unauthorized() {
+    static unauthorized() {
         return new ApiError(401, 'пользователь не авторизован');
     }
+
 }
 
-export  default ApiError;
+export default ApiError;

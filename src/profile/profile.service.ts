@@ -9,7 +9,7 @@ class ProfileService {
     async getById(userId: string) {
         const profile = await ProfileModel.findById<Profile>(userId);
         if (!profile) {
-            return  ApiError.BadRequest('ошибка валидации');
+            throw  ApiError.badRequest('Profile not found');
         }
         const profileDto = new ProfileDto(profile);
         const user = await UserService.getOne(profileDto.id);
@@ -28,7 +28,7 @@ class ProfileService {
             { new: true },
         );
         if (!updatedProfile) {
-            return;
+            throw  ApiError.badRequest('The data could not be updated .Try again please.');
         }
         const profileDto = new ProfileDto(updatedProfile);
         const user = await UserService.getOne(profileDto.id);

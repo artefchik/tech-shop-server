@@ -87,22 +87,17 @@ class UserController {
     async refresh(req: Request, res: Response, next: NextFunction) {
         try {
             const {refreshToken} = req.cookies;
-            console.log(refreshToken);
-            if (!refreshToken) {
-                return next(new BadRequest());
-            }
             const userData = await UserService.refresh(refreshToken);
-            if (userData) {
-                if (!(userData instanceof ApiError)) {
-                    res.cookie('refreshToken', userData?.refreshToken, {
-                        maxAge: 20 * 24 * 60 * 60 * 1000,
-                        httpOnly: true,
-                    });
-                }
-                return res.json(userData);
+            if (!userData){
+                return next(ApiError.badRequest('User not found'))
             }
+            res.cookie('refreshToken', userData.refreshToken, {
+                maxAge: 20 * 24 * 60 * 60 * 1000,
+                httpOnly: true,
+            });
+            return res.json(userData);
         } catch (e) {
-            console.log(e);
+          next(e)
         }
     }
 }
