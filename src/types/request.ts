@@ -12,4 +12,5 @@ export interface QueryParamsType {
     page: number;
     order: SortOrder;
     sort: string;
+    types:string
 }

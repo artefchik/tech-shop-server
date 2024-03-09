@@ -1,6 +1,7 @@
 import { model, Schema, Types } from 'mongoose';
 
 export interface BasketProduct extends Document{
+    _id:Types.ObjectId;
     basketId: Types.ObjectId;
     productId: Types.ObjectId;
     count: number;

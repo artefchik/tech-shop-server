@@ -8,6 +8,7 @@ import {Token} from '../token/token.interface';
 
 import ProfileService from '../profile/profile.service';
 import BasketService from '../basket/basket.service';
+import FavoriteService from "../favorite/favorite.service";
 import ApiError from "../exceptions/ApiError";
 
 interface UserRegistration {
@@ -48,6 +49,7 @@ class UserService {
 
         await ProfileService.createProfile(userDto.id);
         await BasketService.createBasket(userDto.id);
+        await FavoriteService.createFavoriteStorage(userDto.id);
 
         return {
             ...tokens,

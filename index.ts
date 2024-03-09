@@ -32,7 +32,7 @@ const start = async () => {
     try {
         await mongoose.connect(DB_URL, {});
         console.log('Подключение установлено');
-        app.listen(PORT, () => console.log(`server started on PORT=${PORT}`));
+        app.listen(PORT, () => console.log(`server started on PORT=${PORT}`, path.resolve(__dirname,)));
     } catch (e) {
         console.log(e);
     }

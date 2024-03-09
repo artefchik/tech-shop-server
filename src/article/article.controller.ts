@@ -10,7 +10,8 @@ class ArticleController {
         next: NextFunction,
     ) {
         try {
-            const {query} = req;
+            // @ts-ignore
+            const query = req.query
             const articles = await ArticleService.getAll(query);
             if (!articles) {
                 return next(ApiError.badRequest('Incorrect data'));
@@ -18,7 +19,7 @@ class ArticleController {
             // @ts-ignore
             return res.json(articles);
         } catch (e) {
-           next(e)
+            next(e)
         }
     }
 
@@ -36,7 +37,7 @@ class ArticleController {
             // @ts-ignore
             return res.json(article);
         } catch (e) {
-           next(e)
+            next(e)
         }
     }
 }

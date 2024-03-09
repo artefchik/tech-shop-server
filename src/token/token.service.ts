@@ -3,8 +3,8 @@ import { TokenModel } from './token.model';
 import { Token } from './token.interface';
 import { User } from '../user/user.interface';
 
-const JWT_REFRESH_KEY = 'JWT_REFRESH_KEY';
-const JWT_ACCESS_KEY = 'JWT_ACCESS_KEY';
+const JWT_REFRESH_KEY = process.env.JWT_REFRESH_KEY || 'JWT_REFRESH_KEY';
+const JWT_ACCESS_KEY = process.env.JWT_ACCESS_KEY || 'JWT_ACCESS_KEY';
 
 interface TokensGenerate {
     accessToken: string;

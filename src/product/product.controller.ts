@@ -1,6 +1,7 @@
 import ProductsService from './product.service';
 import {NextFunction, Response} from 'express';
 import {QueryParamsType, RequestWithParams, RequestWithQuery} from '../types/request';
+import {ObjectId} from "mongodb";
 
 
 class ProductsController {

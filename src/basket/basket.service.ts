@@ -1,9 +1,15 @@
 import {ObjectId} from 'mongodb';
 import {BasketModel} from './basket.model';
 import {BasketProduct, BasketProductModel} from './basketProduct.model';
-import {ProductModel} from '../product/product.model';
+import {BasketProductDto} from "./basketProduct.dto";
+import ProductService from "../product/product.service";
 
 class BasketService {
+
+    getBasketProductDto(basketProduct: BasketProduct) {
+        return new BasketProductDto(basketProduct)
+    }
+
     async createBasket(id: ObjectId) {
         const basket = await BasketModel.create({
             userId: new ObjectId(id),
@@ -24,7 +30,9 @@ class BasketService {
                 basketId,
                 productId,
             });
-            return product;
+
+            const basketProductDto = this.getBasketProductDto(product)
+            return basketProductDto;
         }
     }
 
@@ -50,14 +58,15 @@ class BasketService {
     async getProducts(id: string) {
         const basketProducts = await BasketProductModel.find<BasketProduct>({basketId: id});
 
+
         async function processProducts() {
             const products = [];
 
             for (const basketProduct of basketProducts) {
                 try {
-                    const prod = await ProductModel.findById(basketProduct.productId);
-
-                    products.push({prod, basketProduct});
+                    const product = await ProductService.getOne(String(basketProduct.productId));
+                    const count = basketProduct.count
+                    products.push({...product, count});
                 } catch (error) {
                     console.log(error);
                 }

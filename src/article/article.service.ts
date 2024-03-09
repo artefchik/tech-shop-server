@@ -1,32 +1,49 @@
-import mongoose from 'mongoose';
-import { ArticleModel } from './article.model';
+import {ArticleModel} from './article.model';
 import UserService from '../user/user.service';
-import { ArticleDto } from './article.dto';
-import { UserDto } from '../user/user.dto';
-import { QueryParamsType } from '../types/request';
-import { Article } from './article.interface';
+import {ArticleDto} from './article.dto';
+import {QueryParamsType} from '../types/request';
+import {Article} from './article.interface';
 import ApiError from "../exceptions/ApiError";
+import {SortOrder} from "mongoose";
+
+
+type SortField = "views"
+
+
+interface QuerySort {
+    [key: string]: SortOrder;
+}
+
+interface QueryFilters {
+    [key: string]: string;
+}
 
 class ArticleService {
     async getAll(query: QueryParamsType) {
+
         const limit = query.limit ?? 2;
         const page = query.page ?? 1;
         const order = query.order ?? 'asc';
         const sort = query.sort ?? 'views';
         let articles;
-        if (!query.category) {
-            articles = await ArticleModel.find()
-                .skip(page * limit - limit)
-                .limit(limit)
-                .sort({ [sort]: order });
-        } else {
-            articles = await ArticleModel.find({
-                types: { $elemMatch: { $eq: query.category } },
-            })
-                .skip(page * limit - limit)
-                .limit(limit)
-                .sort({ [sort]: order });
+        let queryFilter: QueryFilters = {};
+
+        if (query.types) {
+            // @ts-ignore
+            queryFilter.types = {$elemMatch: {$eq: query.types}};
+            // queryFilter.types = query.types
         }
+        console.log(queryFilter,sort,order)
+        let querySort: QuerySort = {};
+        if (query.sort) {
+            querySort[sort] = order;
+        }
+        console.log(querySort)
+
+        articles = await ArticleModel.find(queryFilter)
+            .sort(querySort)
+            .skip(page * limit - limit)
+            .limit(limit)
 
         async function processArticlesWithUsers(articles: Article[]) {
             const articlesWithUsers = [];
@@ -37,7 +54,7 @@ class ArticleService {
 
                     const articleDto = new ArticleDto(article);
 
-                    articlesWithUsers.push({ ...articleDto, user });
+                    articlesWithUsers.push({...articleDto, user});
                 } catch (error) {
                     console.error(`Error processing comment: ${error}`);
                 }
@@ -52,7 +69,7 @@ class ArticleService {
     async getById(id: string) {
         const article = await ArticleModel.findById(id);
         if (!article) {
-           throw ApiError.badRequest('Article not found')
+            throw ApiError.badRequest('Article not found')
         }
         const user = await UserService.getOne(article.userId);
         const articleDto = new ArticleDto(article);
@@ -62,4 +79,5 @@ class ArticleService {
         };
     }
 }
+
 export default new ArticleService();
