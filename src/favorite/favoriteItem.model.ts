@@ -4,6 +4,7 @@ export interface FavoriteItem extends Document{
     _id:Types.ObjectId;
     favoriteId: Types.ObjectId;
     productId: Types.ObjectId;
+    isFavorite:boolean
 }
 
 const FavoriteItemSchema = new Schema<FavoriteItem>({
@@ -15,6 +16,7 @@ const FavoriteItemSchema = new Schema<FavoriteItem>({
         type: Schema.Types.ObjectId,
         ref: 'Product',
     },
+    isFavorite:{type:Boolean}
 });
 
 export const FavoriteItemModel = model('FavoriteItem', FavoriteItemSchema);

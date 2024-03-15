@@ -24,7 +24,7 @@ class ArticleService {
         const limit = query.limit ?? 2;
         const page = query.page ?? 1;
         const order = query.order ?? 'asc';
-        const sort = query.sort ?? 'views';
+        const sort = query.sort ?? 'createdAt';
         let articles;
         let queryFilter: QueryFilters = {};
 

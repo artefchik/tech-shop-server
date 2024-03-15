@@ -16,7 +16,7 @@ export function authMiddleware (req:Request, res:Response, next:NextFunction) {
         if (!userData) {
             return next(ApiError.unauthorized());
         }
-        req.body = userData;
+        // req.body = userData;
         next();
     } catch (e) {
         return next(ApiError.unauthorized());

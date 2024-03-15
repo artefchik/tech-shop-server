@@ -20,22 +20,36 @@ class ProductsService {
     }
 
     async getAll(query: QueryParamsType) {
-        const {category} = query;
+        const {category, color,brand,model} = query;
         console.log(query)
         let products;
         const limit = query.limit ?? 3;
         const page = query.page ?? 1;
         const order = query.order ?? 'asc';
-        const sort = query.sort ?? 'price.current';
+        const sort = 'price.current';
         let categoryFilter: CategoryFilter = {}
         if (category) {
             categoryFilter.category = category
         }
-        let querySort: QuerySort = {};
-        if (query.sort) {
-            querySort['price.current']= order;
+        if (color) {
+            categoryFilter.color = color
         }
-        products = await ProductModel.find(categoryFilter)
+        if (brand){
+            categoryFilter.brand = brand
+        }
+        if (model){
+            categoryFilter.title = model
+        }
+
+        let querySort: QuerySort = {};
+        if (order) {
+            querySort["price.current"] = order;
+        }
+        // const conditions = Object.keys(categoryFilter).map(key => ({
+        //     [key]: { $in: [categoryFilter[key]] }
+        // }));
+        console.log(categoryFilter, querySort)
+        products = await ProductModel.find<Product>(categoryFilter)
             .sort(querySort)
             .skip(page * limit - limit)
             .limit(limit)

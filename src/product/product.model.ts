@@ -1,5 +1,5 @@
-import { model, Schema } from 'mongoose';
-import { Product } from './product.interface';
+import {model, Schema} from 'mongoose';
+import {Product} from './product.interface';
 
 const ProductSchema = new Schema<Product>({
     title: {
@@ -17,11 +17,14 @@ const ProductSchema = new Schema<Product>({
     imageSrc: {
         type: String,
         required: true,
+    }, brand: {
+        type: String,
+        required: true,
     },
-    memory: { type: String },
+    memory: {type: String},
     price: {
-        current: { type: Number },
-        previous: { type: Number },
+        current: {type: Number},
+        previous: {type: Number},
     },
 });
 

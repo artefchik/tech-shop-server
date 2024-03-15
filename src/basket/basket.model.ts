@@ -1,6 +1,7 @@
 import { model, Schema, Types } from 'mongoose';
 
-interface Basket {
+export interface Basket {
+    _id:Types.ObjectId;
     userId: Types.ObjectId;
 }
 

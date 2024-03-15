@@ -9,7 +9,7 @@ import ApiError from "../exceptions/ApiError";
 class ProfileController {
     async getById(
         req: RequestWithParams<{ id: string }>,
-        res: Response<ProfileDtoType>,
+        res: Response,
         next: NextFunction,
     ) {
         try {
@@ -18,12 +18,9 @@ class ProfileController {
             if (!profile) {
                 return next(ApiError.badRequest('Profile not Found'));
             }
-            // @ts-ignore
             res.json(profile);
         } catch (e) {
             return next(e);
-
-
         }
     }
 
@@ -39,7 +36,7 @@ class ProfileController {
                 return next(ApiError.badRequest('Incorrect data'));
 
             }
-            const updateProfile = await ProfileService.updateProfile(body);
+            const updateProfile = await ProfileService.updateProfile(body,id);
             if (!updateProfile){
                 return next(ApiError.badRequest('Incorrect data'));
             }

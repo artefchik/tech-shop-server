@@ -6,6 +6,7 @@ export class FavoriteItemDto {
     favoriteId
 
     productId
+    isFavorite
 
 
 
@@ -13,5 +14,6 @@ export class FavoriteItemDto {
         this.id = data._id;
         this.favoriteId = data.favoriteId;
         this.productId = data.productId;
+        this.isFavorite = data.isFavorite;
     }
 }

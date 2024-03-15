@@ -1,5 +1,5 @@
 import BasketService from './basket.service';
-import {RequestWithParams, RequestWithParamsAndBody} from '../types/request';
+import {RequestWithParams, RequestWithParamsAndBody, RequestWithParamsAndQuery} from '../types/request';
 import {NextFunction, Response} from 'express';
 import ApiError from "../exceptions/ApiError";
 
@@ -23,6 +23,24 @@ class BasketController {
     }
 
     async deleteProduct(
+        req: RequestWithParamsAndQuery<{ id: string }, { productId: string }>,
+        res: Response,
+        next: NextFunction,
+    ) {
+        try {
+            const {id} = req.params;
+            const {productId} = req.query
+            if (!id || !productId) {
+                return next(ApiError.badRequest('Incorrect data'));
+            }
+            const deletedProduct = await BasketService.deleteProduct(id, productId);
+            res.json(deletedProduct);
+        } catch (e) {
+            next(e);
+        }
+    }
+
+    async deleteAllProduct(
         req: RequestWithParams<{ id: string }>,
         res: Response,
         next: NextFunction,
@@ -32,7 +50,7 @@ class BasketController {
             if (!id) {
                 return next(ApiError.badRequest('Incorrect data'));
             }
-            const deletedProduct = await BasketService.deleteProduct(id);
+            const deletedProduct = await BasketService.deleteAllProduct(id)
             res.json(deletedProduct);
         } catch (e) {
             next(e);
@@ -40,17 +58,17 @@ class BasketController {
     }
 
     async updateProduct(
-        req: RequestWithParamsAndBody<{ id: string }, { count: number }>,
+        req: RequestWithParamsAndBody<{ id: string }, { productId: string, count: number }>,
         res: Response,
         next: NextFunction,
     ) {
         try {
             const {id} = req.params;
-            const {count} = req.body;
-            if (!id || !count) {
+            const {count, productId} = req.body;
+            if (!id || !req.body) {
                 return next(ApiError.badRequest('Incorrect data'));
             }
-            const updatedProduct = await BasketService.updateCountProduct(id, count);
+            const updatedProduct = await BasketService.updateCountProduct(id, productId, count);
             res.json(updatedProduct);
         } catch (e) {
             next(e);
@@ -70,6 +88,22 @@ class BasketController {
             next(e);
         }
     }
+
+    async getBasket(
+        req: RequestWithParams<{ id: string }>,
+        res: Response,
+        next: NextFunction,
+    ) {
+        try {
+            const {id: userId} = req.params;
+            const products = await BasketService.getBasket(userId);
+            res.json(products);
+        } catch (e) {
+            next(e);
+        }
+    }
+
+
 }
 
 export default new BasketController();

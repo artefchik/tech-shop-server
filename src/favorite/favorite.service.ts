@@ -1,13 +1,24 @@
 import {ObjectId} from 'mongodb';
-import {FavoriteModel} from './favorite.model';
+import {Favorite, FavoriteModel} from './favorite.model';
 import {FavoriteItem, FavoriteItemModel} from './favoriteItem.model';
-import {ProductModel} from '../product/product.model';
 import {FavoriteItemDto} from "./favoriteItem.dto";
+import {FavoriteDto} from "./favorite.dto";
+import ApiError from "../exceptions/ApiError";
 
 class FavoriteService {
 
     getProductDto(favorite: FavoriteItem) {
         return new FavoriteItemDto(favorite);
+    }
+
+    async getFavoriteStorage(userId: string) {
+        const favoriteStorage = await FavoriteModel.findOne<Favorite>(
+            {userId: new ObjectId(userId)}
+        );
+        if (!favoriteStorage) {
+            throw ApiError.badRequest('Not found')
+        }
+        return new FavoriteDto(favoriteStorage)
     }
 
     async createFavoriteStorage(id: ObjectId) {
@@ -32,8 +43,9 @@ class FavoriteService {
             return favoriteItem;
         }
     }
-    async getFavorites(id: string) {
-        const favoritesItems = await FavoriteItemModel.find<FavoriteItem>({favoriteId: id});
+
+    async getFavorites(favoriteId: string) {
+        const favoritesItems = await FavoriteItemModel.find<FavoriteItem>({favoriteId});
         const favoritesItemsDto = favoritesItems.map(favorite => this.getProductDto(favorite))
         return favoritesItemsDto
     }

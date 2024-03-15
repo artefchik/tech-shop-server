@@ -11,5 +11,6 @@ export interface Product {
     color: string;
     imageSrc: string;
     memory: string;
+    brand: string;
     price: ProductPrice;
 }

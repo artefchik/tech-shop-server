@@ -1,6 +1,7 @@
 import { model, Schema, Types } from 'mongoose';
 
-interface Favorite {
+export interface Favorite {
+    _id: Types.ObjectId;
     userId: Types.ObjectId;
 }
 
