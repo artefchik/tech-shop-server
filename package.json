@@ -4,12 +4,13 @@
   "description": "",
   "main": "index.ts",
   "scripts": {
-    "build": "npm run clean && npm run tsc && npm run copy-assets",
+    "build": "npm run start && npm run dev",
+    "start": "npm run clean && npm run tsc && npm run copy-assets",
     "copy-assets": "ts-node tools/copyAssets",
     "tsc": "npx tsc",
     "clean": "rimraf build/*",
-    "dev": "node ./build/index.js",
-    "start": "npm run build && npm run dev"
+    "dev": "node ./build/index.js"
+
   },
   "keywords": [],
   "author": "",
