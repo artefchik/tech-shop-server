@@ -53,6 +53,18 @@ class FavoriteController {
         } catch (e) {
             next(e);
         }
+    }  async getFavoritesWithProducts(
+        req: RequestWithParams<{ id: string }>,
+        res: Response,
+        next: NextFunction,
+    ) {
+        try {
+            const {id:favoriteId} = req.params;
+            const products = await FavoriteService.getFavoritesWithProducts(favoriteId);
+            res.json(products);
+        } catch (e) {
+            next(e);
+        }
     }
 }
 

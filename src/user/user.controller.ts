@@ -50,7 +50,7 @@ class UserController {
         try {
             const {email, password} = req.body;
             const userData = await UserService.login(email, password);
-            if (!userData){
+            if (!userData) {
                 return next(ApiError.unauthorized());
             }
             res.cookie('refreshToken', userData?.refreshToken, {
@@ -65,8 +65,8 @@ class UserController {
     }
 
     async logout(
-        req: RequestWithBody<UserRegistration>,
-        res: Response<User>,
+        req: Request<{ refreshToken: string }>,
+        res: Response,
         next: NextFunction,
     ) {
         try {
@@ -76,6 +76,7 @@ class UserController {
             }
             await UserService.logout(refreshToken);
             res.clearCookie('refreshToken');
+            res.json('good')
         } catch (e) {
             next(e)
         }
@@ -97,6 +98,17 @@ class UserController {
             next(e)
         }
     }
+
+    async changeAvatar(req: Request, res: Response, next: NextFunction) {
+        try {
+            console.log(req.file)
+            return res.json(req.file);
+
+        } catch (e) {
+            next(e)
+        }
+    }
+
 }
 
 export default new UserController();

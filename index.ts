@@ -7,7 +7,8 @@ import cookieParser from 'cookie-parser';
 import mongoose from 'mongoose';
 import fileUpload from 'express-fileupload';
 import errorMiddleware from "./src/middleware/error.middleware";
-
+import multer from 'multer'
+import {storage} from "./src/middleware/upload.middleware";
 dotenv.config()
 const app: Application = express();
 
@@ -23,8 +24,9 @@ const corsOptions: CorsOptions = {
 app.use(express.json());
 app.use(cors(corsOptions));
 app.use(cookieParser());
-app.use(express.static(path.resolve(__dirname, 'static')));
+app.use(express.static(path.resolve( 'static')));
 app.use(fileUpload({}));
+
 app.use('', router)
 
 app.use(errorMiddleware);

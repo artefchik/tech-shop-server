@@ -23,7 +23,7 @@ class ProductsService {
         const {category, color,brand,model} = query;
         console.log(query)
         let products;
-        const limit = query.limit ?? 3;
+        const limit = query.limit ?? 6;
         const page = query.page ?? 1;
         const order = query.order ?? 'asc';
         const sort = 'price.current';

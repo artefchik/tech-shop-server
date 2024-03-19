@@ -14,7 +14,7 @@ const router = new Router();
 router.use('/', userRouter);
 router.use('/products', productsRouter);
 router.use('/profile', profileRouter);
-router.use('/basket', basketRouter);
+router.use('/basket',authMiddleware, basketRouter);
 router.use('/articles', articleRouter);
 router.use('/favorites',authMiddleware, favoriteRouter);
 

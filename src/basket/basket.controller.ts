@@ -2,16 +2,17 @@ import BasketService from './basket.service';
 import {RequestWithParams, RequestWithParamsAndBody, RequestWithParamsAndQuery} from '../types/request';
 import {NextFunction, Response} from 'express';
 import ApiError from "../exceptions/ApiError";
+import {User} from "../user/user.interface";
 
 class BasketController {
     async addProduct(
-        req: RequestWithParamsAndBody<{ id: string }, { productId: string }>,
+        req: RequestWithParamsAndBody<{ id: string }, { productId: string ,user:User}>,
         res: Response,
         next: NextFunction,
     ) {
         try {
             const {id: basketId} = req.params;
-            const {productId} = req.body;
+            const {productId,user} = req.body;
             if (!basketId || !productId) {
                 return next(ApiError.badRequest('Failed to add'));
             }

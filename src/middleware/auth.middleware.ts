@@ -2,7 +2,7 @@ import ApiError from '../exceptions/ApiError';
 import TokenService from '../token/token.service';
 import {NextFunction, Request, Response} from 'express';
 
-export function authMiddleware (req:Request, res:Response, next:NextFunction) {
+export function authMiddleware(req: Request, res: Response, next: NextFunction) {
     try {
         const authorizationHeader = req.headers.authorization;
         if (!authorizationHeader) {
@@ -16,7 +16,7 @@ export function authMiddleware (req:Request, res:Response, next:NextFunction) {
         if (!userData) {
             return next(ApiError.unauthorized());
         }
-        // req.body = userData;
+        req.body.user = userData
         next();
     } catch (e) {
         return next(ApiError.unauthorized());

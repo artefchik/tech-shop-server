@@ -4,6 +4,7 @@ import {FavoriteItem, FavoriteItemModel} from './favoriteItem.model';
 import {FavoriteItemDto} from "./favoriteItem.dto";
 import {FavoriteDto} from "./favorite.dto";
 import ApiError from "../exceptions/ApiError";
+import ProductService from "../product/product.service";
 
 class FavoriteService {
 
@@ -48,6 +49,26 @@ class FavoriteService {
         const favoritesItems = await FavoriteItemModel.find<FavoriteItem>({favoriteId});
         const favoritesItemsDto = favoritesItems.map(favorite => this.getProductDto(favorite))
         return favoritesItemsDto
+    }
+
+    async getFavoritesWithProducts(favoriteId:string){
+        const favoritesItems = await FavoriteItemModel.find<FavoriteItem>({favoriteId});
+        async function processProducts() {
+            const products = [];
+
+            for (const favoritesItem of favoritesItems) {
+                try {
+                    const product = await ProductService.getOne(String(favoritesItem.productId));
+                    products.push({...product, favoritesItem});
+                } catch (error) {
+                    console.log(error);
+                }
+            }
+
+            return products;
+        }
+
+        return processProducts();
     }
 }
 

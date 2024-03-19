@@ -5,11 +5,11 @@ import {Types} from 'mongoose';
 import TokenService from '../token/token.service';
 import {User} from './user.interface';
 import {Token} from '../token/token.interface';
-
 import ProfileService from '../profile/profile.service';
 import BasketService from '../basket/basket.service';
 import FavoriteService from "../favorite/favorite.service";
 import ApiError from "../exceptions/ApiError";
+import uuid from 'uuid'
 
 interface UserRegistration {
     email: string;
@@ -118,6 +118,7 @@ class UserService {
         }
         return new UserDto(user);
     }
+
 }
 
 export default new UserService();

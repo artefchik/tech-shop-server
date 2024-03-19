@@ -10,7 +10,6 @@ class ArticleController {
         next: NextFunction,
     ) {
         try {
-            // @ts-ignore
             const query = req.query
             const articles = await ArticleService.getAll(query);
             if (!articles) {
